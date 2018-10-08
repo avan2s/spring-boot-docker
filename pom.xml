@@ -23,6 +23,7 @@
         <docker.image.name>erdbeerheld1990/springbootdocker</docker.image.name>
         <java.version>1.8</java.version>
         <docker.maven.plugin.version>0.27.2</docker.maven.plugin.version>
+        <docker.fileName>${project.build.finalName}.${packaging}</docker.fileName>
     </properties>
 
     <dependencies>
