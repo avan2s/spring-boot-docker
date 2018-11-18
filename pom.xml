@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.1.RELEASE</version>
+        <version>2.1.0.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -77,12 +77,84 @@
                 <configuration>
                     <dockerHost>unix:///var/run/docker.sock</dockerHost>
                     <images>
+                        <!-- mysqldb -->
+                        <image>
+                            <!-- name of the image (from dockerhub) -->
+                            <name>mysql</name>
+                            <!-- alias for the container -->
+                            <alias>mysqldb</alias>
+                            <run>
+                                <env>
+                                    <MYSQL_DATABASE>pageviewservice</MYSQL_DATABASE>
+                                    <MYSQL_ALLOW_EMPTY_PASSWORD>yes</MYSQL_ALLOW_EMPTY_PASSWORD>
+                                </env>
+                                <ports>
+                                    <port>3306:3306</port>
+                                </ports>
+                                <wait>
+                                    <time>10000</time>
+                                </wait>
+                            </run>
+
+                        </image>
+                        <!-- rabbit mq -->
+                        <image>
+                            <name>rabbitmq</name>
+                            <alias>rabbitmq</alias>
+                            <run>
+                                <ports>
+                                    <!-- according to https://www.rabbitmq.com/clustering.html -->
+                                    <port>5671:5671</port>
+                                    <port>5672:5672</port>
+                                    <port>4369:4369</port>
+                                    <port>25672:25672</port>
+                                </ports>
+                                <wait>
+                                    <time>10000</time>
+                                </wait>
+                            </run>
+                        </image>
+                        <!-- page view service -->
+                        <image>
+                            <name>erdbeerheld1990/pageviewservice</name>
+                            <alias>pageviewservice</alias>
+                            <run>
+                                <ports>
+                                    <port>8081:8081</port>
+                                </ports>
+                                <links>
+                                    <!-- <alias of container>:<name that can be used for host definitions> -->
+                                    <link>rabbitmq:rabbitmq</link>
+                                    <link>mysqldb:mysqldb</link>
+                                </links>
+                                <env>
+                                    <SPRING_DATASOURCE_URL>jdbc:mysql://mysqldb:3306/pageviewservice
+                                    </SPRING_DATASOURCE_URL>
+                                    <SPRING_PROFILES_ACTIVE>mysql</SPRING_PROFILES_ACTIVE>
+                                    <SPRING_RABBITMQ_HOST>rabbitmq</SPRING_RABBITMQ_HOST>
+                                </env>
+                                <dependsOn>
+                                    <container>mysqldb</container>
+                                    <container>rabbitmq</container>
+                                </dependsOn>
+                                <wait>
+                                    <http>
+                                        <url>http://localhost:8081/health</url>
+                                        <method>GET</method>
+                                        <status>200..399</status>
+                                    </http>
+                                    <time>75000</time>
+                                </wait>
+                            </run>
+                        </image>
+                        <!-- spring boot web application -->
                         <image>
                             <name>${docker.image.name}</name>
                             <!--<alias>dockerfile</alias>-->
                             <build>
                                 <!--<filter>@</filter>-->
                                 <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+                                <!-- -->
                                 <assembly>
                                     <descriptorRef>artifact</descriptorRef>
                                 </assembly>
@@ -92,9 +164,19 @@
                                 </tags>
                             </build>
                             <run>
-                                <ports>
+                                                      <ports>
                                     <port>8080:8080</port>
                                 </ports>
+                                <links>
+                                    <link>rabbitmq:rabbitmq</link>
+                                </links>
+                                <env>
+                                    <SPRING_RABBITMQ_HOST>rabbitmq</SPRING_RABBITMQ_HOST>
+                                </env>
+                                <dependsOn>
+                                    <container>rabbitmq</container>
+                                    <container>pageviewservice</container>
+                                </dependsOn>
                             </run>
                         </image>
                     </images>
