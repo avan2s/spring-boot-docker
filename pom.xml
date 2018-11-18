@@ -24,6 +24,8 @@
         <java.version>1.8</java.version>
         <docker.maven.plugin.version>0.27.2</docker.maven.plugin.version>
         <docker.fileName>${project.build.finalName}.${packaging}</docker.fileName>
+        <page.view.service.model.version>1.4-SNAPSHOT</page.view.service.model.version>
+        <page.view.client.version>0.0.3-SNAPSHOT</page.view.client.version>
     </properties>
 
     <dependencies>
@@ -41,11 +43,22 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>guru.springframework</groupId>
+            <artifactId>page-view-service-model</artifactId>
+            <version>${page.view.service.model.version}</version>
+        </dependency>
+
         <!--testing deps-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>guru.springframework</groupId>
+            <artifactId>page-view-client</artifactId>
+            <version>${page.view.client.version}</version>
         </dependency>
     </dependencies>
 
