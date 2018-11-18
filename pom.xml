@@ -24,7 +24,7 @@
         <java.version>1.8</java.version>
         <docker.maven.plugin.version>0.27.2</docker.maven.plugin.version>
         <docker.fileName>${project.build.finalName}.${packaging}</docker.fileName>
-        <page.view.service.model.version>1.4-SNAPSHOT</page.view.service.model.version>
+        <page.view.service.model.version>1.3</page.view.service.model.version>
         <page.view.client.version>0.0.3-SNAPSHOT</page.view.client.version>
     </properties>
 
@@ -37,7 +37,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -80,7 +83,7 @@
                         <!-- mysqldb -->
                         <image>
                             <!-- name of the image (from dockerhub) -->
-                            <name>mysql</name>
+                            <name>mysql:5.7</name>
                             <!-- alias for the container -->
                             <alias>mysqldb</alias>
                             <run>
@@ -148,37 +151,37 @@
                             </run>
                         </image>
                         <!-- spring boot web application -->
-                        <image>
-                            <name>${docker.image.name}</name>
-                            <!--<alias>dockerfile</alias>-->
-                            <build>
-                                <!--<filter>@</filter>-->
-                                <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
-                                <!-- -->
-                                <assembly>
-                                    <descriptorRef>artifact</descriptorRef>
-                                </assembly>
-                                <tags>
-                                    <tag>latest</tag>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                            </build>
-                            <run>
-                                                      <ports>
-                                    <port>8080:8080</port>
-                                </ports>
-                                <links>
-                                    <link>rabbitmq:rabbitmq</link>
-                                </links>
-                                <env>
-                                    <SPRING_RABBITMQ_HOST>rabbitmq</SPRING_RABBITMQ_HOST>
-                                </env>
-                                <dependsOn>
-                                    <container>rabbitmq</container>
-                                    <container>pageviewservice</container>
-                                </dependsOn>
-                            </run>
-                        </image>
+                        <!--<image>-->
+                        <!--<name>${docker.image.name}</name>-->
+                        <!--&lt;!&ndash;<alias>dockerfile</alias>&ndash;&gt;-->
+                        <!--<build>-->
+                        <!--&lt;!&ndash;<filter>@</filter>&ndash;&gt;-->
+                        <!--<dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>-->
+                        <!--&lt;!&ndash; &ndash;&gt;-->
+                        <!--<assembly>-->
+                        <!--<descriptorRef>artifact</descriptorRef>-->
+                        <!--</assembly>-->
+                        <!--<tags>-->
+                        <!--<tag>latest</tag>-->
+                        <!--<tag>${project.version}</tag>-->
+                        <!--</tags>-->
+                        <!--</build>-->
+                        <!--<run>-->
+                        <!--<ports>-->
+                        <!--<port>8080:8080</port>-->
+                        <!--</ports>-->
+                        <!--<links>-->
+                        <!--<link>rabbitmq:rabbitmq</link>-->
+                        <!--</links>-->
+                        <!--<env>-->
+                        <!--<SPRING_RABBITMQ_HOST>rabbitmq</SPRING_RABBITMQ_HOST>-->
+                        <!--</env>-->
+                        <!--<dependsOn>-->
+                        <!--<container>rabbitmq</container>-->
+                        <!--<container>pageviewservice</container>-->
+                        <!--</dependsOn>-->
+                        <!--</run>-->
+                        <!--</image>-->
                     </images>
                 </configuration>
             </plugin>
