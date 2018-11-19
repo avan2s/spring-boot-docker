@@ -142,7 +142,7 @@
                                 </dependsOn>
                                 <wait>
                                     <http>
-                                        <url>http://localhost:8081/health</url>
+                                        <url>http://localhost:8081/actuator/health</url>
                                         <method>GET</method>
                                         <status>200..399</status>
                                     </http>
@@ -150,38 +150,37 @@
                                 </wait>
                             </run>
                         </image>
-                        <!-- spring boot web application -->
-                        <!--<image>-->
-                        <!--<name>${docker.image.name}</name>-->
-                        <!--&lt;!&ndash;<alias>dockerfile</alias>&ndash;&gt;-->
-                        <!--<build>-->
-                        <!--&lt;!&ndash;<filter>@</filter>&ndash;&gt;-->
-                        <!--<dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>-->
-                        <!--&lt;!&ndash; &ndash;&gt;-->
-                        <!--<assembly>-->
-                        <!--<descriptorRef>artifact</descriptorRef>-->
-                        <!--</assembly>-->
-                        <!--<tags>-->
-                        <!--<tag>latest</tag>-->
-                        <!--<tag>${project.version}</tag>-->
-                        <!--</tags>-->
-                        <!--</build>-->
-                        <!--<run>-->
-                        <!--<ports>-->
-                        <!--<port>8080:8080</port>-->
-                        <!--</ports>-->
-                        <!--<links>-->
-                        <!--<link>rabbitmq:rabbitmq</link>-->
-                        <!--</links>-->
-                        <!--<env>-->
-                        <!--<SPRING_RABBITMQ_HOST>rabbitmq</SPRING_RABBITMQ_HOST>-->
-                        <!--</env>-->
-                        <!--<dependsOn>-->
-                        <!--<container>rabbitmq</container>-->
-                        <!--<container>pageviewservice</container>-->
-                        <!--</dependsOn>-->
-                        <!--</run>-->
-                        <!--</image>-->
+                        <!--spring boot web application-->
+                        <image>
+                            <name>${docker.image.name}</name>
+                            <!--<alias>dockerfile</alias>-->
+                            <build>
+                                <!--<filter>@</filter>-->
+                                <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </build>
+                            <run>
+                                <ports>
+                                    <port>8080:8080</port>
+                                </ports>
+                                <links>
+                                    <link>rabbitmq:rabbitmq</link>
+                                </links>
+                                <env>
+                                    <SPRING_RABBITMQ_HOST>rabbitmq</SPRING_RABBITMQ_HOST>
+                                </env>
+                                <dependsOn>
+                                    <container>rabbitmq</container>
+                                    <container>pageviewservice</container>
+                                </dependsOn>
+                            </run>
+                        </image>
                     </images>
                 </configuration>
             </plugin>
