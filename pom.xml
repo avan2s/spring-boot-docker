@@ -140,6 +140,9 @@
                                     <container>mysqldb</container>
                                     <container>rabbitmq</container>
                                 </dependsOn>
+                                <log>
+                                    <enabled>true</enabled>
+                                </log>
                                 <wait>
                                     <http>
                                         <url>http://localhost:8081/actuator/health</url>
